@@ -44,44 +44,6 @@ do
 		end
 	end
 end
-connectionstodisconnect[#connectionstodisconnect + 1] = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function(char)
-	if tppos2 then 	
-		task.spawn(function()
-			task.wait(0.1)
-			local root = entityLibrary.isAlive and entityLibrary.character.Humanoid.Health > 0 and entityLibrary.character.HumanoidRootPart
-			if root and tppos2 then 
-				if (workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")) > 1 then
-					--createwarning("TPRedirection", "may lagback "..(workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")), 5)
-				end
-				RunLoops:BindToHeartbeat("TPRedirection", 1, function(dt)
-					if root and tppos2 then 
-						local dist = (1100 * dt)
-						if (tppos2 - root.CFrame.p).Magnitude > dist then
-							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p).Unit * dist
-							root.Velocity = (tppos2 - root.CFrame.p).Unit * 20
-						else
-							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p)
-						end
-					end
-				end)
-				RunLoops:BindToStepped("TPRedirection", 1, function()
-					if entityLibrary.isAlive then 
-						for i,v in pairs(lplr.Character:GetChildren()) do 
-							if v:IsA("BasePart") then v.CanCollide = false end
-						end
-					end
-				end)
-				repeat
-					task.wait()
-				until tppos2 == nil or (tppos2 - root.CFrame.p).Magnitude < 1
-				RunLoops:UnbindFromHeartbeat("TPRedirection")
-				RunLoops:UnbindFromStepped("TPRedirection")
-				--createwarning("TPRedirection", "Teleported.", 5)
-				tppos2 = nil
-			end
-		end)
-	end
-end)
 local GuiLibrary = shared.GuiLibrary
 local timer_players = os.clock()
 deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -114,6 +76,45 @@ deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsBut
 		end
 	end
 })
+connectionstodisconnect[#connectionstodisconnect + 1] = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function(char)
+	if tppos2 then 	
+		task.spawn(function()
+			task.wait(0.1)
+			local root = entityLibrary.isAlive and entityLibrary.character.Humanoid.Health > 0 and entityLibrary.character.HumanoidRootPart
+			if root and tppos2 then 
+				if (workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")) > 1 then
+					createwarning("DNut Private", "Anticheat will interfere cuz of ur lag.", 5)
+					deathtpmod.ToggleButton(false)
+				end
+				RunLoops:BindToHeartbeat("TPRedirection", 1, function(dt)
+					if root and tppos2 then 
+						local dist = (1100 * dt)
+						if (tppos2 - root.CFrame.p).Magnitude > dist then
+							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p).Unit * dist
+							root.Velocity = (tppos2 - root.CFrame.p).Unit * 20
+						else
+							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p)
+						end
+					end
+				end)
+				RunLoops:BindToStepped("TPRedirection", 1, function()
+					if entityLibrary.isAlive then 
+						for i,v in pairs(lplr.Character:GetChildren()) do 
+							if v:IsA("BasePart") then v.CanCollide = false end
+						end
+					end
+				end)
+				repeat
+					task.wait()
+				until tppos2 == nil or (tppos2 - root.CFrame.p).Magnitude < 1
+				RunLoops:UnbindFromHeartbeat("TPRedirection")
+				RunLoops:UnbindFromStepped("TPRedirection")
+				--createwarning("TPRedirection", "Teleported.", 5)
+				tppos2 = nil
+			end
+		end)
+	end
+end)
 local tppos2
 local deathtpmod = {["Enabled"] = false}
 local lplr = game.Players.LocalPlayer
@@ -160,44 +161,6 @@ do
 		end
 	end
 end
-connectionstodisconnect[#connectionstodisconnect + 1] = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function(char)
-	if tppos2 then 	
-		task.spawn(function()
-			task.wait(0.1)
-			local root = entityLibrary.isAlive and entityLibrary.character.Humanoid.Health > 0 and entityLibrary.character.HumanoidRootPart
-			if root and tppos2 then 
-				if (workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")) > 1 then
-					--createwarning("TPRedirection", "may lagback "..(workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")), 5)
-				end
-				RunLoops:BindToHeartbeat("TPRedirection", 1, function(dt)
-					if root and tppos2 then 
-						local dist = (1100 * dt)
-						if (tppos2 - root.CFrame.p).Magnitude > dist then
-							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p).Unit * dist
-							root.Velocity = (tppos2 - root.CFrame.p).Unit * 20
-						else
-							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p)
-						end
-					end
-				end)
-				RunLoops:BindToStepped("TPRedirection", 1, function()
-					if entityLibrary.isAlive then 
-						for i,v in pairs(lplr.Character:GetChildren()) do 
-							if v:IsA("BasePart") then v.CanCollide = false end
-						end
-					end
-				end)
-				repeat
-					task.wait()
-				until tppos2 == nil or (tppos2 - root.CFrame.p).Magnitude < 1
-				RunLoops:UnbindFromHeartbeat("TPRedirection")
-				RunLoops:UnbindFromStepped("TPRedirection")
-				--createwarning("TPRedirection", "Teleported.", 5)
-				tppos2 = nil
-			end
-		end)
-	end
-end)
 local timer_players = os.clock()
 local GuiLibrary = shared.GuiLibrary
 deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -239,12 +202,50 @@ deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsBut
 						end)
 						end
 				end
-				--local warning = createwarning("TPRedirection", "Set TP Position", 3)
 			end
 			deathtpmod.ToggleButton(false)
 		end
 	end
 })
+connectionstodisconnect[#connectionstodisconnect + 1] = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function(char)
+	if tppos2 then 	
+		task.spawn(function()
+			task.wait(0.1)
+			local root = entityLibrary.isAlive and entityLibrary.character.Humanoid.Health > 0 and entityLibrary.character.HumanoidRootPart
+			if root and tppos2 then 
+				if (workspace:GetServerTimeNow() - lplr:GetAttribute("LastTeleported")) > 1 then
+					createwarning("DNut Private", "Anticheat will interfere cuz of ur lag.", 5)
+					deathtpmod.ToggleButton(false)
+				end
+				RunLoops:BindToHeartbeat("TPRedirection", 1, function(dt)
+					if root and tppos2 then 
+						local dist = (1100 * dt)
+						if (tppos2 - root.CFrame.p).Magnitude > dist then
+							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p).Unit * dist
+							root.Velocity = (tppos2 - root.CFrame.p).Unit * 20
+						else
+							root.CFrame = root.CFrame + (tppos2 - root.CFrame.p)
+						end
+					end
+				end)
+				RunLoops:BindToStepped("TPRedirection", 1, function()
+					if entityLibrary.isAlive then 
+						for i,v in pairs(lplr.Character:GetChildren()) do 
+							if v:IsA("BasePart") then v.CanCollide = false end
+						end
+					end
+				end)
+				repeat
+					task.wait()
+				until tppos2 == nil or (tppos2 - root.CFrame.p).Magnitude < 1
+				RunLoops:UnbindFromHeartbeat("TPRedirection")
+				RunLoops:UnbindFromStepped("TPRedirection")
+				--createwarning("TPRedirection", "Teleported.", 5)
+				tppos2 = nil
+			end
+		end)
+	end
+end)
 local GuiLibrary = shared.GuiLibrary
 local Settings = {}
 SkipTimerr = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
@@ -512,7 +513,7 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 	Function = function(callback)
 		if callback then
 			if not disabledproper then 
-				createwarning("InfiniteFly", "Wait for the last fly to finish", 3)
+				createwarning("DNut Private", "Wait for the last tp to finish", 3)
 				fly.ToggleButton(false)
 				return 
 			end
@@ -522,7 +523,7 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 			rayparams.FilterType = Enum.RaycastFilterType.Whitelist
 			local ray = workspace:Raycast(mousepos.Origin, mousepos.Direction * 10000, rayparams)
 			if not ray then
-				createwarning("DNut Private","Unable to find position.")
+				createwarning("DNut Private","Unable to find position.",5)
 				return fly.ToggleButton(false)
 			else
 				ray = ray.Position
@@ -581,7 +582,7 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 				clonesuccess = true
 			end
 			if not clonesuccess then 
-				createwarning("InfiniteFly", "Character missing", 3)
+				createwarning("DNut Private", "Character missing", 3)
 				fly.ToggleButton(false)
 				return 
 			end
@@ -633,17 +634,17 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 				part.Position = oldcloneroot.Position
 				disabledproper = false
 				if isnetworkowner(oldcloneroot) then 
-					createwarning("InfiniteFly", "Waiting "..(flydelay.Value / 100).."s to not flag", 3)
+					createwarning("DNut Private", "Waiting "..(flydelay.Value / 100).."s to not flag", 3)
 					task.delay(flydelay.Value / 100, disablefunc, part)
 				else
-					createwarning("InfiniteFly", "Waiting until not flagged", 10)
+					createwarning("DNut Private", "Waiting until not flagged", 10)
 					task.spawn(function()
 						repeat task.wait() until oldcloneroot and isnetworkowner(oldcloneroot) or oldcloneroot == nil
 						local ray = workspace:Raycast(Vector3.new(oldcloneroot.Position.X, clone.CFrame.p.Y, oldcloneroot.Position.Z), Vector3.new(0, -1000, 0), blockraycast)
 						oldcloneroot.Velocity = Vector3.new(0, -1, 0)
 						oldcloneroot.CFrame = CFrame.new(oldcloneroot.Position.X, ray and ray.Position.Y + (entityLibrary.character.Humanoid.HipHeight + (oldcloneroot.Size.Y / 2)) or clone.CFrame.p.Y, oldcloneroot.Position.Z)
 						entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-						createwarning("InfiniteFly", "Waiting 1.5s to not flag", 3)
+						createwarning("DNut Private", "Waiting 1.5s to not flag", 3)
 						task.wait(1.5)
 						disablefunc(part)
 					end)

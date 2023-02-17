@@ -3,6 +3,14 @@ local deathtpmod = {["Enabled"] = false}
 local lplr = game.Players.LocalPlayer
 local entityLibrary = shared.vapeentity
 local connectionstodisconnect = {}
+local function createwarning(title, text, delay)
+	local suc, res = pcall(function()
+		local frame = GuiLibrary["CreateNotification"](title, text, delay, "assets/WarningNotification.png")
+		frame.Frame.Frame.ImageColor3 = Color3.fromRGB(236, 129, 44)
+		return frame
+	end)
+	return (suc and res)
+end
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
 	function RunLoops:BindToRenderStep(name, num, func)

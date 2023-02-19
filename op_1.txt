@@ -3,14 +3,6 @@ local deathtpmod = {["Enabled"] = false}
 local lplr = game.Players.LocalPlayer
 local entityLibrary = shared.vapeentity
 local connectionstodisconnect = {}
-local function createwarning(title, text, delay)
-	local suc, res = pcall(function()
-		local frame = GuiLibrary["CreateNotification"](title, text, delay, "assets/WarningNotification.png")
-		frame.Frame.Frame.ImageColor3 = Color3.fromRGB(236, 129, 44)
-		return frame
-	end)
-	return (suc and res)
-end
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
 	function RunLoops:BindToRenderStep(name, num, func)
@@ -53,6 +45,14 @@ do
 	end
 end
 local GuiLibrary = shared.GuiLibrary
+local function createwarning(title, text, delay)
+	local suc, res = pcall(function()
+		local frame = GuiLibrary["CreateNotification"](title, text, delay, "assets/WarningNotification.png")
+		frame.Frame.Frame.ImageColor3 = Color3.fromRGB(236, 129, 44)
+		return frame
+	end)
+	return (suc and res)
+end
 local timer_players = os.clock()
 deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 	Name = "BedTPRedirection",
@@ -70,11 +70,11 @@ deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsBut
 					end
 					if bed.Name == "bed" and bed.Covers.BrickColor ~= lplr.Team.TeamColor then
 						pcall(function ()
-						tppos2 = bed:GetChildren()[1].Position + Vector3.new(0,5,0)
-						game.Players.LocalPlayer.Character.Humanoid.Health = 0
-						--entity.fullEntityRefresh()
-						repeat task.wait() until tppos2 == nil
-						repeat task.wait() until not bed.Parent
+							tppos2 = bed:GetChildren()[1].Position + Vector3.new(0,5,0)
+							game.Players.LocalPlayer.Character.Humanoid.Health = 0
+							--entity.fullEntityRefresh()
+							repeat task.wait() until tppos2 == nil
+							repeat task.wait() until not bed.Parent
 						end)
 					end
 				end
@@ -128,47 +128,6 @@ local deathtpmod = {["Enabled"] = false}
 local lplr = game.Players.LocalPlayer
 local entityLibrary = shared.vapeentity
 local connectionstodisconnect = {}
-local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
-do
-	function RunLoops:BindToRenderStep(name, num, func)
-		if RunLoops.RenderStepTable[name] == nil then
-			RunLoops.RenderStepTable[name] = game:GetService("RunService").RenderStepped:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromRenderStep(name)
-		if RunLoops.RenderStepTable[name] then
-			RunLoops.RenderStepTable[name]:Disconnect()
-			RunLoops.RenderStepTable[name] = nil
-		end
-	end
-
-	function RunLoops:BindToStepped(name, num, func)
-		if RunLoops.StepTable[name] == nil then
-			RunLoops.StepTable[name] = game:GetService("RunService").Stepped:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromStepped(name)
-		if RunLoops.StepTable[name] then
-			RunLoops.StepTable[name]:Disconnect()
-			RunLoops.StepTable[name] = nil
-		end
-	end
-
-	function RunLoops:BindToHeartbeat(name, num, func)
-		if RunLoops.HeartTable[name] == nil then
-			RunLoops.HeartTable[name] = game:GetService("RunService").Heartbeat:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromHeartbeat(name)
-		if RunLoops.HeartTable[name] then
-			RunLoops.HeartTable[name]:Disconnect()
-			RunLoops.HeartTable[name] = nil
-		end
-	end
-end
 local timer_players = os.clock()
 local GuiLibrary = shared.GuiLibrary
 deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -184,31 +143,31 @@ deathtpmod = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsBut
 				local tpos2backup
 				for i,plr in pairs(game.Players:GetPlayers()) do
 					task.wait(0.1)
-						if plr.Character and plr ~= lplr and lplr.Team.TeamColor ~= plr.Team.TeamColor then
+					if plr.Character and plr ~= lplr and lplr.Team.TeamColor ~= plr.Team.TeamColor then
+						pcall(function ()
+							tpos2backup = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+							tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+							game.Players.LocalPlayer.Character.Humanoid.Health = 0
+							task.wait(1)
 							pcall(function ()
-						tpos2backup = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
-						tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
-						game.Players.LocalPlayer.Character.Humanoid.Health = 0
-						task.wait(1)
-						pcall(function ()
-							tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+								tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+							end)
+							if not tppos2 then
+								tppos2 = tpos2backup
+							end
+							task.wait(1)
+							pcall(function ()
+								tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+							end)
+							if not tppos2 then
+								tppos2 = tpos2backup
+							end
+							repeat task.wait() until tppos2 == nil
+							pcall(function ()
+								repeat task.wait() until not plr.Character:FindFirstChild("HumanoidRootPart")
+							end)
 						end)
-						if not tppos2 then
-							tppos2 = tpos2backup
-						end
-						task.wait(1)
-						pcall(function ()
-							tppos2 = plr.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
-						end)
-						if not tppos2 then
-							tppos2 = tpos2backup
-						end
-						repeat task.wait() until tppos2 == nil
-						pcall(function ()
-							repeat task.wait() until not plr.Character:FindFirstChild("HumanoidRootPart")
-						end)
-						end)
-						end
+					end
 				end
 			end
 			deathtpmod.ToggleButton(false)
@@ -257,68 +216,27 @@ end)
 local GuiLibrary = shared.GuiLibrary
 local Settings = {}
 SkipTimerr = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-    ["Name"] = "SkipTimer",
-    ["Function"] = function(callback) 
-        if callback then 
-            local key = game.Players.LocalPlayer:GetMouse().Hit.Position + Vector3.new(5,5,5)
-            Settings.SkippedTimer = true
-            local tween = game:GetService("TweenService")
-            game.Players.LocalPlayer.Character.Humanoid.Died:Connect(function()
-            repeat task.wait() pcall(function ()
-                task.spawn(function ()
-                    local info = TweenInfo.new(.01, Enum.EasingStyle.Linear,Enum.EasingDirection.In)
-            tween:Create(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart"),info
-            ,{CFrame = CFrame.new(key.X,key.Y,key.Z)}):Play()
-        SkipTimerr.ToggleButton(false)
-                end)
-            end) until not Settings.SkippedTimer
-            end)
-        else
-            Settings.SkippedTimer = false
-        end
-    end,
+	["Name"] = "SkipTimer",
+	["Function"] = function(callback) 
+		if callback then 
+			local key = game.Players.LocalPlayer:GetMouse().Hit.Position + Vector3.new(5,5,5)
+			Settings.SkippedTimer = true
+			local tween = game:GetService("TweenService")
+			game.Players.LocalPlayer.Character.Humanoid.Died:Connect(function()
+				repeat task.wait() pcall(function ()
+						task.spawn(function ()
+							local info = TweenInfo.new(.01, Enum.EasingStyle.Linear,Enum.EasingDirection.In)
+							tween:Create(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart"),info
+								,{CFrame = CFrame.new(key.X,key.Y,key.Z)}):Play()
+							SkipTimerr.ToggleButton(false)
+						end)
+					end) until not Settings.SkippedTimer
+			end)
+		else
+			Settings.SkippedTimer = false
+		end
+	end,
 })
-local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
-do
-	function RunLoops:BindToRenderStep(name, num, func)
-		if RunLoops.RenderStepTable[name] == nil then
-			RunLoops.RenderStepTable[name] = game:GetService("RunService").RenderStepped:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromRenderStep(name)
-		if RunLoops.RenderStepTable[name] then
-			RunLoops.RenderStepTable[name]:Disconnect()
-			RunLoops.RenderStepTable[name] = nil
-		end
-	end
-
-	function RunLoops:BindToStepped(name, num, func)
-		if RunLoops.StepTable[name] == nil then
-			RunLoops.StepTable[name] = game:GetService("RunService").Stepped:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromStepped(name)
-		if RunLoops.StepTable[name] then
-			RunLoops.StepTable[name]:Disconnect()
-			RunLoops.StepTable[name] = nil
-		end
-	end
-
-	function RunLoops:BindToHeartbeat(name, num, func)
-		if RunLoops.HeartTable[name] == nil then
-			RunLoops.HeartTable[name] = game:GetService("RunService").Heartbeat:Connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromHeartbeat(name)
-		if RunLoops.HeartTable[name] then
-			RunLoops.HeartTable[name]:Disconnect()
-			RunLoops.HeartTable[name] = nil
-		end
-	end
-end
 local entityLibrary = shared.vapeentity
 local GuiLibrary = shared.GuiLibrary
 local function createwarning(title, text, delay)
@@ -623,12 +541,15 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 			end)
 		else
 			RunLoops:UnbindFromHeartbeat("DNutPrivateFly")
+
 			if clonesuccess and oldcloneroot and clone and lplr.Character.Parent == workspace and oldcloneroot.Parent ~= nil and disabledproper and cloned == lplr.Character then 
+				local tppos2
 				local ray = workspace:Raycast(Vector3.new(oldcloneroot.Position.X, clone.CFrame.p.Y, oldcloneroot.Position.Z), Vector3.new(0, -1000, 0), blockraycast)
-				clone.CFrame = CFrame.new(tppos)
+				clone.CFrame = CFrame.new(tppos.X ,tppos.Y + oldcloneroot.Position.Y + clone.Position.Y + (entityLibrary.character.Humanoid.HipHeight + (oldcloneroot.Size.Y / 2)) or clone.CFrame.p.Y,tppos.Z)
+				clone.CFrame = CFrame.new(tppos.X ,tppos.Y + 1000 + oldcloneroot.Position.Y + clone.Position.Y + (entityLibrary.character.Humanoid.HipHeight + (oldcloneroot.Size.Y / 2)) or clone.CFrame.p.Y,tppos.Z)
 				oldcloneroot.Velocity = Vector3.new(oldcloneroot.Velocity.X, -1, oldcloneroot.Velocity.Z)
 				oldcloneroot.CFrame = clone.CFrame
-				entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+				tppos2 = clone.CFrame
 				local part = Instance.new("Part")
 				part.Anchored = true
 				part.CanCollide = false
@@ -638,7 +559,7 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 				part.Shape = Enum.PartType.Ball
 				part.TopSurface = Enum.SurfaceType.Smooth
 				part.BottomSurface = Enum.SurfaceType.Smooth
-				part.Parent = workspace.GameSounds
+				part.Parent = workspace
 				part.Position = oldcloneroot.Position
 				disabledproper = false
 				if isnetworkowner(oldcloneroot) then 
@@ -665,4 +586,83 @@ fly = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 		end
 	end,
 	HoverText = "Test"
+})
+local TexturePack = {["Enabled"] = false}
+local stored = {}
+TexturePack = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "TexturePack",
+	["Function"] = function(Enabled)
+		if Enabled then
+			if shared.dnutassets then
+				shared.dnutassets = nil
+			end
+			if shared.dnutassets_char then
+				shared.dnutassets_char:Disconnect()
+				shared.dnutassets_char = nil
+			end
+			local world = workspace.Map.Worlds:GetChildren()[1]
+			local blocks = world.Blocks:GetChildren()
+			for i,v in pairs(blocks) do
+				if v.Name == "grass" then
+					pcall(function ()
+						v:GetChildren()[1].Texture = "rbxassetid://12522267200"
+						table.insert(stored,v:GetChildren()[1])
+					end)
+				end
+			end
+			local function sword(name)
+				game:GetObjects("rbxassetid://7062163349")[1].Parent = workspace
+				workspace.Sword.Name = "Handle"
+				workspace.Handle.Size = Vector3.new(0.03, 1.886, 1.385)
+				local attach = game.ReplicatedStorage.Items[name]["Handle"]["RightGripAttachment"]:Clone()
+				game:GetService("ReplicatedStorage").Items[name].Handle:Destroy()
+				workspace.Handle.Parent = game:GetService("ReplicatedStorage").Items[name]
+				attach.Parent = game:GetService("ReplicatedStorage").Items[name].Handle
+				attach.Position = Vector3.new(-4.37114e-08, 2.08716, 0.996195)
+				attach.Axis = Vector3.new(-0.104528, -8.74228e-08, -0.994522)
+				attach.Rotation = Vector3.new(180, -90, 0)
+				attach.CFrame = CFrame.new(-4.37113989e-08, 2.08716011, 0.996195018, -4.37113883e-08, 0, -1, 8.74227766e-08, -1, -3.82137093e-15, -1, -8.74227766e-08, 4.37113883e-08)
+				return attach.Parent.Parent
+			end
+			sword("wood_sword")
+			sword("stone_sword")
+			sword("iron_sword")
+			sword("diamond_sword")
+			sword("emerald_sword")
+		else
+			if shared.dnutassets then
+				shared.dnutassets = nil
+			end
+			if shared.dnutassets_char then
+				shared.dnutassets_char:Disconnect()
+				shared.dnutassets_char = nil
+			end
+		end
+	end
+})
+local CheckMagnitude = {["Enabled"] = false}
+CheckMagnitude = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "CheckMagnitude",
+	["Function"] = function(Enabled)
+		if Enabled then
+			local mousepos = lplr:GetMouse().UnitRay
+			local rayparams = RaycastParams.new()
+			rayparams.FilterDescendantsInstances = {workspace.Map, workspace:FindFirstChild("SpectatorPlatform")}
+			rayparams.FilterType = Enum.RaycastFilterType.Whitelist
+			local ray = workspace:Raycast(mousepos.Origin, mousepos.Direction * 10000, rayparams)
+			if not ray then
+				createwarning("DNut","Unable to find position.",5)
+				return fly.ToggleButton(false)
+			else
+				ray = ray.Position
+			end
+			local magnitude = (lplr.Character.HumanoidRootPart.Position - ray).magnitude
+			if magnitude > 70 then
+				createwarning("DNut","will get anticheated.(if no ground in path)",5)
+			else
+				createwarning("DNut","will NOT get anticheated!",5)	
+			end
+			CheckMagnitude.ToggleButton(false)
+		end
+	end
 })
